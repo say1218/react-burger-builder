@@ -18,12 +18,12 @@ class BurgerBuilder extends React.Component {
 
 	state = {
 		ingredients: {
-			salad: 2,
-			bacon: 2,
-			cheese: 1,
-			meat: 3,
+			salad: 0,
+			bacon: 0,
+			cheese: 0,
+			meat: 0,
 		},
-		totalPrice: 4,
+		totalPrice: 0,
 		purchasable: false,
 	};
 
@@ -72,6 +72,7 @@ class BurgerBuilder extends React.Component {
 					ingredientsAdded={this.addIngredientHandler}
 					ingredientsRemoved={this.removeIngredientHandler}
 					disabled={disabledInfo}
+					price={this.state.totalPrice}
 				/>
 			</Aux>
 		);
