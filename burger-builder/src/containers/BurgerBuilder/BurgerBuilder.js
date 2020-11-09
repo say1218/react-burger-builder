@@ -2,6 +2,10 @@ import React from "react";
 import Aux from "../../hoc/Aux";
 import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
+import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
+
+import { navigate } from "@reach/router";
+import Modal from "../../components/UI/Modal/Modal";
 
 const INGREDIENT_PRICES = {
 	salad: 0.5,
@@ -25,6 +29,7 @@ class BurgerBuilder extends React.Component {
 		},
 		totalPrice: 0,
 		purchaseable: false,
+		purchasing: false,
 	};
 
 	updatePurchaseState = (updatedIngredients) => {
@@ -68,6 +73,12 @@ class BurgerBuilder extends React.Component {
 		this.updatePurchaseState(updatedIngredients);
 	};
 
+	toggleModal = () => this.setState({ purchasing: !this.state.purchasing });
+
+	purchaseContinued = () => {
+		console.log("continue your amazing purchase");
+	};
+
 	render() {
 		const disabledInfo = { ...this.state.ingredients };
 		for (let key in disabledInfo) {
@@ -84,7 +95,16 @@ class BurgerBuilder extends React.Component {
 					disabled={disabledInfo}
 					price={this.state.totalPrice}
 					purchaseable={this.state.purchaseable}
+					ordered={this.toggleModal}
 				/>
+				{this.state.purchasing ? (
+					<Modal>
+						<OrderSummary
+							ingredients={this.state.ingredients}
+							purchaseCancelled={this.toggleModal}
+							purchaseContinued={this.purchaseContinued}></OrderSummary>
+					</Modal>
+				) : null}
 			</Aux>
 		);
 	}
