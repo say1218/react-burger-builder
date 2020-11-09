@@ -13,7 +13,7 @@ const burger = ({ ingredients }) => {
 		.reduce((arr, elem) => {
 			return arr.concat(elem);
 		}, []);
-	console.log("ingredient list", transformedIngredients);
+	// console.log("ingredient list", transformedIngredients);
 
 	if (!transformedIngredients.length) {
 		transformedIngredients = <div>Please start adding ingrdients</div>;
