@@ -4,6 +4,7 @@ import Burger from "../../components/Burger/Burger";
 import BuildControls from "../../components/Burger/BuildControls/BuildControls";
 import OrderSummary from "../../components/Burger/OrderSummary/OrderSummary";
 import Modal from "../../components/UI/Modal/Modal";
+import Spinner from "../../components/UI/Spinner/Spinner";
 
 //import { navigate } from "@reach/router";
 import axios from "../../axios-orders";
@@ -31,6 +32,7 @@ class BurgerBuilder extends React.Component {
 		totalPrice: 0,
 		purchaseable: false,
 		purchasing: false,
+		loading: false,
 	};
 
 	updatePurchaseState = (updatedIngredients) => {
@@ -77,6 +79,7 @@ class BurgerBuilder extends React.Component {
 	toggleModal = () => this.setState({ purchasing: !this.state.purchasing });
 
 	purchaseContinued = () => {
+		this.setState({ loading: true });
 		console.log("continue your amazing purchase");
 		const order = {
 			ingredients: this.state.ingredients,
@@ -96,7 +99,8 @@ class BurgerBuilder extends React.Component {
 		axios
 			.post("/orders.json", order)
 			.then((response) => console.log(response))
-			.catch((error) => console.log(error));
+			.catch((error) => console.log(error))
+			.finally(() => this.setState({ loading: false, purchasing: false }));
 	};
 
 	render() {
@@ -105,6 +109,17 @@ class BurgerBuilder extends React.Component {
 			disabledInfo[key] = disabledInfo[key] <= 0;
 		}
 		console.log("disbaled inf", disabledInfo);
+
+		let orderSummary = (
+			<OrderSummary
+				ingredients={this.state.ingredients}
+				price={this.state.totalPrice}
+				purchaseCancelled={this.toggleModal}
+				purchaseContinued={this.purchaseContinued}></OrderSummary>
+		);
+		if (this.state.loading) {
+			orderSummary = <Spinner />;
+		}
 
 		return (
 			<Aux>
@@ -117,15 +132,7 @@ class BurgerBuilder extends React.Component {
 					purchaseable={this.state.purchaseable}
 					ordered={this.toggleModal}
 				/>
-				{this.state.purchasing ? (
-					<Modal>
-						<OrderSummary
-							ingredients={this.state.ingredients}
-							price={this.state.totalPrice}
-							purchaseCancelled={this.toggleModal}
-							purchaseContinued={this.purchaseContinued}></OrderSummary>
-					</Modal>
-				) : null}
+				{this.state.purchasing ? <Modal>{orderSummary}</Modal> : null}
 			</Aux>
 		);
 	}
